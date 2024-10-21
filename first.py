@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 # Labels for entity recognition
-labels = ["PERSON", "PHONE_NUMBER", "EMAIL_ADDRESS", "LOCATION"]
+labels = ["PERSON", "PHONE_NUMBER", "EMAIL_ADDRESS", "LOCATION","AGE","DOB","DATEOFBIRTH"]
 
 # Initialize the Spacy model with GLINER
 nlp = spacy.load("en_core_web_sm")
