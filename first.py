@@ -67,5 +67,5 @@ def anonymize_text(request: TextRequest):
 # Run the app with Uvicorn if this script is the main program
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8001)
 
