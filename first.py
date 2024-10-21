@@ -55,7 +55,11 @@ def anonymize_text(request: TextRequest):
             "PERSON": OperatorConfig("replace", {"new_value": "[REDACTED NAME]"}),
             "PHONE_NUMBER": OperatorConfig("replace", {"new_value": "[REDACTED PHONE NUMBER]"}),
             "EMAIL_ADDRESS": OperatorConfig("replace", {"new_value": "[REDACTED EMAIL]"}),
-            "LOCATION": OperatorConfig("replace", {"new_value": "[REDACTED PLACE]"})
+            "LOCATION": OperatorConfig("replace", {"new_value": "[REDACTED PLACE]"}),
+            "AGE": OperatorConfig("replace", {"new_value": "[REDACTED AGE]"}),
+            "DOB": OperatorConfig("replace", {"new_value": "[REDACTED DOB]"}),
+            "DATEOFBIRTH": OperatorConfig("replace", {"new_value": "[REDACTED DOB]"})
+            
         },
     )
     return {"anonymized_text": pii_sanitized_text.text}
