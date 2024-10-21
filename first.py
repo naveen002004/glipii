@@ -13,7 +13,7 @@ labels = ["PERSON", "PHONE_NUMBER", "EMAIL_ADDRESS", "LOCATION"]
 # Initialize the Spacy model with GLINER
 nlp = spacy.load("en_core_web_sm")
 nlp.add_pipe(
-    "gliner_spacy", config={"gliner_model": "urchade/gliner_base", "labels": labels}
+    "gliner_spacy", config={"gliner_model": "urchade/gliner_multi_pii-v1", "labels": labels}
 )
 
 # Custom NLP Engine for Presidio
