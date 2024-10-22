@@ -6,9 +6,13 @@ from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import OperatorConfig
 from fastapi import FastAPI
 from pydantic import BaseModel
+import ray
+
+# Initialize Ray and enable the dashboard
+ray.init(include_dashboard=True)
 
 # Labels for entity recognition
-labels = ["PERSON", "PHONE_NUMBER", "EMAIL_ADDRESS", "LOCATION","AGE","DOB","DATEOFBIRTH"]
+labels = ["PERSON", "PHONE_NUMBER", "EMAIL_ADDRESS", "LOCATION", "AGE", "DOB", "DATEOFBIRTH"]
 
 # Initialize the Spacy model with GLINER
 nlp = spacy.load("en_core_web_sm")
@@ -35,17 +39,18 @@ app = FastAPI()
 class TextRequest(BaseModel):
     text: str
 
+# Ray remote function for entity analysis
+@ray.remote
+def analyze_text(text: str):
+    return analyzer.analyze(text=text, entities=labels, language="en")
+
 # Define the endpoint for anonymizing text
 @app.post("/anonymize")
 def anonymize_text(request: TextRequest):
     text = request.text
 
-    # Predict entities using GLINER
-    analyzer_results = analyzer.analyze(
-        text=text,
-        entities=labels,
-        language="en"
-    )
+    # Use Ray to perform entity analysis in parallel
+    analyzer_results = ray.get(analyze_text.remote(text))
 
     # Redact the identified PII data
     pii_sanitized_text = anonymizer.anonymize(
@@ -59,7 +64,6 @@ def anonymize_text(request: TextRequest):
             "AGE": OperatorConfig("replace", {"new_value": "[REDACTED AGE]"}),
             "DOB": OperatorConfig("replace", {"new_value": "[REDACTED DOB]"}),
             "DATEOFBIRTH": OperatorConfig("replace", {"new_value": "[REDACTED DOB]"})
-            
         },
     )
     return {"anonymized_text": pii_sanitized_text.text}
